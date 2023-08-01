@@ -1,0 +1,8 @@
+title;color;startTime;endTime;resourceId;daysOfWeek;startRecur;endRecur
+Movilidad y dinámica celular: introducción a la dinámica y crecimiento tumoral; #FB62F6;08:30:00;10:00:00;uni;[ 3, 4 ];2023-09-25;2024-01-19
+Análisis numérico de EDP y aproximación; #645DD7;10:00:00;11:30:00;uni;[ 4, 5 ];2023-09-25;2024-01-19
+Modelos matemáticos en ecología; #B3FFFC;13:00:00;14:30:00;uni;[ 4 ];2023-09-25;2024-01-19
+Modelos matemáticos en ecología; #B3FFFC;08:30:00;10:00:00;uni;[ 5 ];2023-09-25;2024-01-19
+
+Bioestadística y Bioinformática; #4CB944;08:30:00;10:00:00;uni;[ 2, 4 ];2024-01-29;2024-04-12
+Física de redes complejas y aplicaciones interdisciplinares; #FF4242;10:00:00;11:30:00;uni;[ 1, 3 ];2024-01-29;2024-04-12
