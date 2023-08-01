@@ -9,7 +9,6 @@ import pandas as pd
 
 df = pd.read_csv('eventos.csv', delimiter=';')
 
-eventos = df.to_dict(orient='records')
 
 st.set_page_config(page_title="Calendario", page_icon="📆", layout='wide')
 
@@ -25,10 +24,11 @@ with st.expander('df de eventos:'):
 
 
 
+eventos = edited_df.to_dict(orient='records')
 
 
 mode = st.selectbox(
-    "Modo de representación:", ("daygrid", "timegrid", "timeline",
+    "Modo de representación:", ("timegrid", "daygrid", "timeline",
                        "resource-daygrid", "resource-timegrid", "resource-timeline",
                        "list", "multimonth")
 )
