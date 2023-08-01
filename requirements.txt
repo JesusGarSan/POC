@@ -1,4 +1,4 @@
 matplotlib==3.6.3
-streamlit==1.25.0
-streamlit-calendar==0.3.0
+streamlit
+streamlit-calendar
 pandas==2.0.2
