@@ -2,3 +2,4 @@ matplotlib==3.6.3
 streamlit
 streamlit-calendar
 pandas==2.0.2
+streamlit-image-coordinates==0.1.5
