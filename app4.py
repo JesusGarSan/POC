@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-from PIL import Image
 from streamlit_image_coordinates import streamlit_image_coordinates
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -37,30 +36,15 @@ def get_ellipse_coords(point: tuple[int, int], radius = 5) -> tuple[int, int, in
     )
 
 
-def heatmap_placeholder(coords, color_fuente):
+def mapa_clickable(coords, color_fuente):
+    st.write('Pincha donde quieras colocar la fuente:')
     from PIL import Image, ImageDraw
     with Image.open("puerto.png") as img:
         draw = ImageDraw.Draw(img)
 
         # Draw an ellipse at each coordinate in points
         if st.session_state["coords"] != None:
-            ## Draw the noise circles
-            #num_puntos = 4
-            #tamanos = np.linspace(4e2, 1, num_puntos)  # Tamaños de 10 a 1
-            #colores = np.linspace(0, 0.5, num_puntos)  # Valores de 0 a 1 para el cmap 'viridis'
-            #colores = [
-            #    (0, 0, 255),
-            #    (0, 255, 0, 128),
-            #    (255, 255, 0, 128),
-            #    (255, 255, 0, 128),
-            #    'white']
-            #for i in range(num_puntos):
-            #    #continue
-            #    tamaño = tamanos[i]  # Tamaño del punto
-            #    color = colores[i]  # Color del punto
-            #    
-            #    noise_coords = get_ellipse_coords(st.session_state["coords"], radius=tamaño)
-            #    draw.ellipse(noise_coords, fill=color)
+
             coords = get_ellipse_coords(st.session_state["coords"])
             draw.ellipse(coords, fill=color_fuente)
         
@@ -112,7 +96,7 @@ def random_heatmap_generator(numero_fuente, color_fuente, coords, img='puerto.pn
 
     st.subheader('Mapa de ruido')
 
-    opacity = st.slider('Opacidad', min_value=0.0, max_value=1.0, value=0.8)
+    opacity = st.slider('Opacidad', min_value=0.0, max_value=1.0, value=0.5)
 
     xrange = st.session_state.corners_geo[0][1], st.session_state.corners_geo[1][1] 
     yrange = st.session_state.corners_geo[0][0], st.session_state.corners_geo[1][0] 
@@ -126,7 +110,7 @@ def random_heatmap_generator(numero_fuente, color_fuente, coords, img='puerto.pn
     geo_coords = px_to_coords(st.session_state.coords)
     plt.scatter(geo_coords[0], geo_coords[1], c = color_fuente, edgecolor='black')
 
-    
+
     # Semilla para reproducibilidad
     long, lat = coords
     semilla = int(numero_fuente * 1e6 + long*1e3 + lat)
@@ -162,6 +146,20 @@ def px_to_coords(coords_px):
 
     return coords_geo
 
+
+def coords_to_px(coords_geo):
+    resolution_px = st.session_state.resolution_px
+    corner_geo    = st.session_state.corners_geo
+
+    geo_x = coords_geo[0]
+    geo_y = coords_geo[1]
+    
+    x_px = (geo_x - corner_geo[0][1]) /(corner_geo[1][1] - corner_geo[0][1]) *resolution_px[0]
+    y_px = (geo_y - corner_geo[0][0]) /(corner_geo[1][0] - corner_geo[0][0]) *resolution_px[1]
+
+    coords_px = (round(x_px,0), round(y_px,0))
+
+    return coords_px
 #----------------------------------------------------
 
 # ---- DECLARACIÓN DE VARIABLES GLOBALES DE SESIÓN -------
@@ -171,6 +169,11 @@ if 'manual_coords' not in st.session_state:
 
 if 'coords' not in st.session_state:
     st.session_state.coords = None
+
+#if 'skip_map' not in st.session_state:
+#    st.session_state.skip_map = False
+
+
 
 
 st.session_state.corners_geo = [[43.354826, -8.539946],[43.3325442, -8.497632]]
@@ -183,15 +186,26 @@ column = st.columns(2)
 with column[0]:
 
     fuente, color_fuente, numero_fuente = elegir_fuente()
-    new_coords = heatmap_placeholder(st.session_state.coords, color_fuente)
+    new_coords = mapa_clickable(st.session_state.coords, color_fuente)
 
-    if new_coords!= None:
+    if new_coords!= None:# and st.session_state.skip_map != True:
         st.session_state.coords = new_coords    
+    #elif st.session_state.skip_map == True: st.session_state.skip_map = False
     
 if st.session_state.coords != None:    
     #colorbar()
     with column[0]:
         st.session_state.manual_coords = coords_manual(px_to_coords(st.session_state.coords))
+        #st.write(st.session_state.coords)
+        #st.write(st.session_state.manual_coords)
+        #st.write(coords_to_px(st.session_state.manual_coords))
+        #st.write(coords_to_px(st.session_state.manual_coords) == st.session_state.coords)
+        #if coords_to_px(st.session_state.manual_coords) != st.session_state.coords:
+        #    st.session_state.coords = coords_to_px(st.session_state.manual_coords)
+        #    st.session_state.skip_map = True
+        #    st.experimental_rerun()
+
+
 
     with column[1]:
         random_heatmap_generator(numero_fuente, color_fuente, st.session_state.coords)
